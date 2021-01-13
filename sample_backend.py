@@ -1,6 +1,9 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
+
+
+
 app = Flask(__name__)
 
 #@app.route('/users', methods=['GET', 'POST'])
@@ -55,6 +58,17 @@ def get_user(id):
       return ({})
    return users
 
+@app.route('/users/<id>',methods=['DELETE'])
+def delete_user(id):
+    if request.method == 'DELETE':
+      search_username = request.args.get('name')  # accessing the value of parameter 'name'
+      if search_username :
+        response = request.delete('name')
+        search_username =response.headers
+      return search_username
+    return users
+
+
 @app.route('/users', methods=['GET', 'POST'])
 def get_users():
    if request.method == 'GET':
@@ -76,8 +90,12 @@ def get_users():
       return resp
 
 
-@app.route('/users/<id>')
-def delete_user(id):
-    if id:
-        delete(id)
-    return users
+@app.route('/users/<name>/<job>')
+def match_name_job(name, job):
+    if name:
+      for user in users['users_list']:
+        if ((user['name']==name) and (user['job'] == job)): 
+          resp = jsonify(success=True)
+        else:
+          resp = jsonify(success=False)
+    return resp
