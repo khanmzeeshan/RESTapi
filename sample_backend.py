@@ -70,7 +70,14 @@ def get_users():
       userToAdd = request.get_json()
       users['users_list'].append(userToAdd)
       resp = jsonify(success=True)
-      fetch("http://127.0.0.1:5000/users")
+      #fetch("http://127.0.0.1:5000/users")
       #resp.status_code = 200 #optionally, you can always set a response code. 
       # 200 is the default code for a normal response
       return resp
+
+
+@app.route('/users/<id>')
+def delete_user(id):
+    if id:
+        delete(id)
+    return users
