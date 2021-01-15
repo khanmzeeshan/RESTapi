@@ -60,13 +60,10 @@ def get_user(id):
 
 @app.route('/users/<id>',methods=['DELETE'])
 def delete_user(id):
-    if request.method == 'DELETE':
-      search_username = request.args.get('name')  # accessing the value of parameter 'name'
-      if search_username :
-        response = request.delete('name')
-        search_username =response.headers
-      return search_username
-    return users
+   userToDelete = request.get_json()
+   users['users_list'].remove(userToDelete)
+   resp = jsonify(success=True)
+   return resp
 
 
 @app.route('/users', methods=['GET', 'POST'])
