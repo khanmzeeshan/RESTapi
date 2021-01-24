@@ -2,7 +2,7 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from flask_cors import CORS
-
+import random
 
 app = Flask(__name__)
 CORS(app) # <--- add this line
@@ -49,10 +49,10 @@ users = {
 }
 
 
-
+@app.route('/')
 def id_gen():
-   new_id = random.range(22,500,6)
-   return new_id
+   for x in range(10): 
+      return (random.randint(1, 20) * 5) 
 
 @app.route('/users/', methods=['GET', 'POST', 'DELETE'])
 def get_users():
@@ -87,23 +87,25 @@ def get_users():
       
    elif request.method == 'POST':
       userToAdd = request.get_json()
-      userToAdd['id'] = str(id_gen())
+      userToAdd['id'] = (id_gen())
       users['users_list'].append(userToAdd)
       resp = jsonify(success=True, user=userToAdd)
-      resp.status_code = 201
+      resp.status_code = 200
       #fetch("http://127.0.0.1:5000/users")
       #resp.status_code = 200 #optionally, you can always set a response code. 
       # 200 is the default code for a normal response
       return resp
    elif request.method == 'DELETE':
       userToDelete = request.args.get('id')
-      if userToDelete: 
-         uFound = {'users_list' : []}
-         for user in users['users_list']:
-            if user['id'] == userToDelete:
-               users['users_list'].remove(user)
-         return users
-      return users
+     
+      for user in users['users_list']:
+         if user['id'] == userToDelete:
+            users['users_list'].remove(user)
+         resp = jsonify(users)
+         resp.status_code = 201
+      return resp
+         
+   return users
 
 '''
 @app.route('/users/<id>', methods=['GET', 'DELETE'])
